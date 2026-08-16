@@ -1,5 +1,5 @@
 *.json
 test.py
 data/
-Source/_pycache_/
+_pycache_/
 *.pyc
