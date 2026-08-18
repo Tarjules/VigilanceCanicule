@@ -21,7 +21,7 @@ class ExtractData:
             return None
 
     @staticmethod
-    def extract_heatwave_level(dict: dict, dept: str): #2A et 2B !
+    def extract_heatwave_level(dict: dict, dept: str):  # 2A et 2B !
         if type(dept) is int:
             dept = str(dept)
         try:
