@@ -1,4 +1,6 @@
-from Source.ImportJson import ImportJson
 
+from Source.ExtractData import ExtractData as e
 
-ImportJson.download_year(2032)
+data = e.load_json("data/2026/2026_2_6.json")
+print(e.extract_heatwave_level(data, "83"))
+

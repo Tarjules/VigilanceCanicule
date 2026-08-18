@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 BASE = "https://files.data.gouv.fr/"
 
 
-class ImportJson:
+class ImportJsonTexteVigilanceMeteoFrance:
     @staticmethod
     def construct_url(year: int, month: int, day: int):
         """ Permet de construire l'URL poitant vers le fichier json contenant
@@ -46,7 +46,7 @@ class ImportJson:
             raise FileExistsError
         soup = BeautifulSoup(html_content, 'html.parser')
         links = soup.find_all('a')
-        link = urljoin(BASE, links[1].get('href'))      
+        link = urljoin(BASE, links[1].get('href'))
 
         html_content = requests.get(link).text
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -64,7 +64,8 @@ class ImportJson:
             if not presence_cdp_texte_vigilance:
                 raise FileNotFoundError
         except FileNotFoundError:
-            print("Il n'y a pas de fichier CDP_TEXTE_Vigilance.json pour la date du " + date)
+            print("Il n'y a pas de fichier CDP_TEXTE_Vigilance.json" +
+                  "pour la date du " + date)
             return None
         else:
             link = urljoin(BASE, link_json)
@@ -102,13 +103,16 @@ class ImportJson:
             print("a")
             print(i)
             name = str(year) + "_" + str(month) + "_" + str(i)
-            path = ImportJson.construct_path("data/" + str(year), name)
+            path = ImportJsonTexteVigilanceMeteoFrance.construct_path(
+                "data/" + str(year), name)
             try:
-                url = ImportJson.construct_url(year, month, i)
-                ImportJson.download_day(url, path)                
+                url = ImportJsonTexteVigilanceMeteoFrance.construct_url(year,
+                                                                        month,
+                                                                        i)
+                ImportJsonTexteVigilanceMeteoFrance.download_day(url, path)
             except FileExistsError:
                 i = 32
-                print("fin du mois")
+                print("il n'y a plus de données pour ce mois")
             i += 1
 
     def download_year(year: int):
@@ -121,5 +125,5 @@ class ImportJson:
         else:
             m = 1
             while m <= 12:
-                ImportJson.download_month(year, m)
+                ImportJsonTexteVigilanceMeteoFrance.download_month(year, m)
                 m += 1
