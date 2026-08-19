@@ -2,6 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from Source.Date import Date
 
 BASE = "https://files.data.gouv.fr/"
 
@@ -10,7 +11,8 @@ class ImportJsonTexteVigilanceMeteoFrance:
     @staticmethod
     def construct_url(year: int, month: int, day: int):
         """ Permet de construire l'URL poitant vers le fichier json contenant
-        les textes de vigilances à 6h à la date fournie.
+        les textes de vigilances à 6h à la date fournie. Ce code dépend de
+        la structure de la base de données proposée par Météo France.
 
         Args:
             year(int): année
@@ -22,15 +24,7 @@ class ImportJsonTexteVigilanceMeteoFrance:
                 """
 
         # A partir des entiers fournis, il faut reconstituer une date
-        if month < 10:
-            month = "0" + str(month)
-        else:
-            month = str(month)
-        if day < 10:
-            day = "0" + str(day)
-        else:
-            day = str(day)
-        date = str(year) + "/" + month + "/" + day
+        date = Date.from_int_to_string_slash(year, month, day)
         url_page_html = BASE + "meteofrance/data/vigilance/metropole/"
         url_page_html += date + "/"
 
@@ -93,17 +87,31 @@ class ImportJsonTexteVigilanceMeteoFrance:
                 json.dump(response_json, fichier, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def construct_path(loc: str, name: str):
+    def construct_path_json(loc: str, name: str):
+        '''
+        Args:
+            loc(str): Dossier
+            name(str): Nom du fichier
+
+        Returns:
+            "loc/name.json"'''
         return loc + "/" + name + ".json"
 
     @staticmethod
     def download_month(year: int, month: int):
+        '''Permet de télécharger tout un mois de donnée de
+        vigilance jour par jour si elles existent. Les fichiers sont
+        enregistrés dans un dossier "year" sous le format Année_mois_jour.json
+        Attention :  programme lent
+
+        Args:
+            year(int): Année concernée
+            month(int): mois concerné
+        '''
         i = 1
         while i <= 31:
-            print("a")
-            print(i)
-            name = str(year) + "_" + str(month) + "_" + str(i)
-            path = ImportJsonTexteVigilanceMeteoFrance.construct_path(
+            name = Date.from_int_to_string_underscore(year, month, i)
+            path = ImportJsonTexteVigilanceMeteoFrance.construct_path_json(
                 "data/" + str(year), name)
             try:
                 url = ImportJsonTexteVigilanceMeteoFrance.construct_url(year,
@@ -115,7 +123,17 @@ class ImportJsonTexteVigilanceMeteoFrance:
                 print("il n'y a plus de données pour ce mois")
             i += 1
 
+    @staticmethod
     def download_year(year: int):
+        '''Permet de télécharger toute une année de donnée de vigilance jour
+        par jour si elles existent. Les fichiers sont enregistrés dans un
+        dossier "year" sous le format Année_mois_jour.json
+        Peut-être utilisé même si l'année est incomplète.
+        Attention :  programme lent
+
+        Args:
+            year(int): Année concernée
+        '''
         try:
             if year < 2022 or year > 2026:
                 raise IndexError

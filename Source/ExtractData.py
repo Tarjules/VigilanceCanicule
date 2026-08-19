@@ -4,6 +4,13 @@ import json
 class ExtractData:
     @staticmethod
     def load_json(path: str):
+        """Permet de charger les données json stockées à 
+        l'adresse relative path
+
+        Args:
+            path(string): chemin relatif du json à charger
+        returns:
+            donnees(dict): dictionnaire contenant les données du json"""
         try:
             with open(path, 'r', encoding='utf-8') as fichier:
                 donnees = json.load(fichier)
@@ -15,13 +22,29 @@ class ExtractData:
 
     @staticmethod
     def extract_date(dict: dict):
+        """Permet d'obtenir la date d'émission du texte de vigilance
+
+        Args:
+            dict(dict) : Le dictionnaire contenant les textes de vigilance
+        Returns:
+            date(str): la date d'émission ou None si elle n'est pas trouvé
+        """
         try:
             return dict["product"]["update_time"][:10]
         except TypeError:
             return None
 
     @staticmethod
-    def extract_heatwave_level(dict: dict, dept: str):  # 2A et 2B !
+    def extract_heatwave_level(dict: dict, dept): 
+        """A partir du dictionnaire fournit, retourne la vigilance et son
+        niveau pour le département demandé
+
+        Args:
+            dict(dict) : Le dictionnaire contenant les textes de vigilance
+            dept(str ou int): Le département d'intéret
+        Returns:
+            ([str, str, str]): [departement, Vigilance, niveau] ou
+            [departement, None, None]"""
         if type(dept) is int:
             dept = str(dept)
         try:
