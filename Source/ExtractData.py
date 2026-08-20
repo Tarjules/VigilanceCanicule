@@ -1,5 +1,5 @@
 import json
-
+import os
 
 class ExtractData:
     @staticmethod
@@ -54,9 +54,23 @@ class ExtractData:
                     if len(domain["bloc_items"]) <= 1:
                         raise ValueError
                     info_dept = domain["bloc_items"][1]["text_items"][0]
+                    # soit DEP_QUALIFICATION_ZONAL, soit DEP_SUIVI, bref, code valide mais à revoir pour extraire le max d'infos 
         except (TypeError, ValueError):
             return [dept, None, None]
         else:
             vigilance = info_dept["hazard_name"]
             level = info_dept["term_items"][0]["risk_name"]
             return [dept, vigilance, level]
+
+    def data_year_and_departement(year: int, dept):
+        filenames = os.listdir("data/"+str(year))
+        print(filenames)
+        year_dept = []
+        for filename in filenames:
+            print(filename)
+            donnees = ExtractData.load_json("data/"+str(year)+"/"+filename)
+            day = []
+            day.append(ExtractData.extract_date(donnees))
+            day += (ExtractData.extract_heatwave_level(donnees, dept))
+            year_dept.append(day)
+        return year_dept

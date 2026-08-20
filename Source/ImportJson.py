@@ -58,7 +58,7 @@ class ImportJsonTexteVigilanceMeteoFrance:
             if not presence_cdp_texte_vigilance:
                 raise FileNotFoundError
         except FileNotFoundError:
-            print("Il n'y a pas de fichier CDP_TEXTE_Vigilance.json" +
+            print("Il n'y a pas de fichier CDP_TEXTE_Vigilance.json " +
                   "pour la date du " + date)
             return None
         else:
