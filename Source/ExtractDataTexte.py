@@ -1,7 +1,8 @@
 import json
 import os
 
-class ExtractData:
+
+class ExtractDataTexte:
     @staticmethod
     def load_json(path: str):
         """Permet de charger les données json stockées à 
@@ -51,26 +52,29 @@ class ExtractData:
             for domain in dict["product"]["text_bloc_items"]:
                 if domain["domain_id"] == dept:
                     info_dept = domain
-                    if len(domain["bloc_items"]) <= 1:
-                        raise ValueError
-                    info_dept = domain["bloc_items"][1]["text_items"][0]
-                    # soit DEP_QUALIFICATION_ZONAL, soit DEP_SUIVI, bref, code valide mais à revoir pour extraire le max d'infos 
-        except (TypeError, ValueError):
+            for bloc in info_dept["bloc_items"]:
+                if bloc["id"] in ["DEP_SUIVI",
+                                  "DEP_QUALIFICATION_ZONAL",
+                                  "DEP_EVOLUTION_ZONAL"]:
+                    bloc_text = bloc["text_items"][0]
+                    return [dept, bloc_text["hazard_name"],
+                            bloc_text["term_items"][0]["risk_name"]]
+        except TypeError:
+            print("pas de valeur pour cette journée")
             return [dept, None, None]
         else:
-            vigilance = info_dept["hazard_name"]
-            level = info_dept["term_items"][0]["risk_name"]
-            return [dept, vigilance, level]
+            return [dept, None, None]
 
     def data_year_and_departement(year: int, dept):
-        filenames = os.listdir("data/"+str(year))
-        print(filenames)
+        filenames = os.listdir("data/"+str(year)+"/texte")
+        list.sort(filenames, key=lambda x: x[:10])
         year_dept = []
         for filename in filenames:
-            print(filename)
-            donnees = ExtractData.load_json("data/"+str(year)+"/"+filename)
+            donnees = ExtractDataTexte.load_json("data/"+str(year) +
+                                                 "/texte/"+filename)
             day = []
-            day.append(ExtractData.extract_date(donnees))
-            day += (ExtractData.extract_heatwave_level(donnees, dept))
+            day.append(ExtractDataTexte.extract_date(donnees))
+            day += (ExtractDataTexte.extract_heatwave_level(donnees, dept))
+            print(day)
             year_dept.append(day)
         return year_dept
