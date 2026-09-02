@@ -17,9 +17,18 @@ class ExtractDataTexte(ExtractData):
             return dict["product"]["update_time"][:10]
         except TypeError:
             return None
+    
+    @staticmethod
+    def extract_dict_departement(dict: dict, dept):
+        if type(dept) is int:
+            dept = str(dept)
+        for departement in dict["product"]["text_bloc_items"]:
+            if departement["domain_id"] == dept:
+                return departement
+        return None   
 
     @staticmethod
-    def extract_heatwave_level(dict: dict, dept): 
+    def extract_heatwave_level(dept: dict): 
         """A partir du dictionnaire fournit, retourne la vigilance et son
         niveau pour le département demandé
 
@@ -29,24 +38,19 @@ class ExtractDataTexte(ExtractData):
         Returns:
             ([str, str, str]): [departement, Vigilance, niveau] ou
             [departement, None, None]"""
-        if type(dept) is int:
-            dept = str(dept)
         try:
-            for domain in dict["product"]["text_bloc_items"]:
-                if domain["domain_id"] == dept:
-                    info_dept = domain
-            for bloc in info_dept["bloc_items"]:
+            for bloc in dept["bloc_items"]:
                 if bloc["id"] in ["DEP_SUIVI",
                                   "DEP_QUALIFICATION_ZONAL",
                                   "DEP_EVOLUTION_ZONAL"]:
                     bloc_text = bloc["text_items"][0]
-                    return [dept, bloc_text["hazard_name"],
+                    return [bloc_text["hazard_name"],
                             bloc_text["term_items"][0]["risk_name"]]
         except TypeError:
             print("pas de valeur pour cette journée")
-            return [dept, None, None]
+            return [None, None]
         else:
-            return [dept, None, None]
+            return [None, None]
 
     def data_year_and_departement(year: int, dept):
         filenames = os.listdir("data/"+str(year)+"/texte")
@@ -57,7 +61,7 @@ class ExtractDataTexte(ExtractData):
                                                  "/texte/"+filename)
             day = []
             day.append(ExtractDataTexte.extract_date(donnees))
-            day += (ExtractDataTexte.extract_heatwave_level(donnees, dept))
-            print(day)
+            dict_dep = ExtractDataTexte.extract_dict_departement(donnees, dept)
+            day += (ExtractDataTexte.extract_heatwave_level(dict_dep))
             year_dept.append(day)
         return year_dept

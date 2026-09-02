@@ -26,7 +26,11 @@ class ExtractData(ABC):
         pass
 
     @staticmethod
-    def extract_heatwave_level(dict: dict, dept):
+    def extract_dict_departement(dict: dict, dept):
+        pass
+
+    @staticmethod
+    def extract_heatwave_level(dept: dict):
         pass
 
     @staticmethod

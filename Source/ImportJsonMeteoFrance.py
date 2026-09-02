@@ -28,24 +28,24 @@ class ImportJsonMeteoFrance(ABC):
             raise FileExistsError
         soup = BeautifulSoup(html_content, 'html.parser')
         links = soup.find_all('a')
-        link = urljoin(BASE, links[1].get('href'))
-
-        html_content = requests.get(link).text
-        soup = BeautifulSoup(html_content, 'html.parser')
-        links = soup.find_all('a')
-        try:
+        j = 1
+        presence_fichier = False
+        while j < len(links):
+            link = urljoin(BASE, links[j].get('href'))
+            html_content = requests.get(link).text
+            soup = BeautifulSoup(html_content, 'html.parser')
+            linksjson = soup.find_all('a')
             i = 0
-            presence_fichier = False
-            while i < len(links):
-                href = links[i].get('href')
+            while i < len(linksjson):
+                href = linksjson[i].get('href')
                 if filename in href:
                     link_json = href
-                    i = len(links)
+                    i = len(linksjson)
+                    j = len(links)
                     presence_fichier = True
                 i = i+1
-            if not presence_fichier:
-                raise FileNotFoundError
-        except FileNotFoundError:
+            j = j+1
+        if not presence_fichier:
             print("Il n'y a pas de fichier " +
                   filename+".json pour la date du " + date)
             return None
@@ -86,19 +86,6 @@ class ImportJsonMeteoFrance(ABC):
             else:
                 pass
 
-    def dowload_month(self, year: int, month: int):
-        '''Permet de télécharger tout un mois de donnée de
-            vigilance jour par jour si elles existent. Les fichiers sont
-            enregistrés dans un dossier "year" sous le
-            format Année_mois_jour.json
-            Attention :  programme lent
-
-            Args:
-                year(int): Année concernée
-                month(int): mois concerné
-            '''
-        pass
-
     def download_year(self, year: int):
         '''Permet de télécharger toute une année de donnée de vigilance jour
         par jour si elles existent. Les fichiers sont enregistrés dans un
@@ -118,8 +105,31 @@ class ImportJsonMeteoFrance(ABC):
         else:
             m = 1
             while m <= 12:
-                ImportJsonMeteoFrance.download_month(year, m)
+                self.download_month(year, m)
                 m += 1
+
+    def download_month(self, year, month):
+        '''Permet de télécharger tout un mois de donnée de
+            vigilance jour par jour si elles existent. Les fichiers sont
+            enregistrés dans un dossier "year" sous le
+            format Année_mois_jour.json
+            Attention :  programme lent
+
+            Args:
+                year(int): Année concernée
+                month(int): mois concerné
+            '''
+        i = 1
+        while i <= 31:
+            name = Date.from_int_to_string_underscore(year, month, i)
+            path = self.construct_path_json(year, name)
+            try:
+                url = self.construct_url(year, month, i)
+                self.download_day(url, path)
+            except FileExistsError:
+                i = 32
+                print("il n'y a plus de données pour ce mois")
+            i += 1
 
     @staticmethod
     def construct_path_json(self, year: int, name: str):
