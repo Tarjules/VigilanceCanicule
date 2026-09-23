@@ -3,6 +3,7 @@ from Source.ImportJsonMeteoFrance import ImportJsonMeteoFrance
 
 class ImportJsonTexteMeteoFrance(ImportJsonMeteoFrance):
     def __init__(self):
+        """Initialise l'importeur de fichier."""
         pass
 
     def construct_url(self, year: int, month: int, day: int):

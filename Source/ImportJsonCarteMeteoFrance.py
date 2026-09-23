@@ -3,8 +3,9 @@ from Source.ImportJsonMeteoFrance import ImportJsonMeteoFrance
 
 class ImportJsonCarteMeteoFrance(ImportJsonMeteoFrance):
     def __init__(self):
+        """Initialise l'importeur de fichier."""
         pass
-    
+
     def construct_url(self, year: int, month: int, day: int):
         return super().construct_url("CDP_CARTE_EXTERNE",
                                      year, month, day)

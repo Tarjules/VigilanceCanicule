@@ -5,13 +5,6 @@ import os
 class ExtractDataCarte(ExtractData):
     @staticmethod
     def extract_date(dict: dict):
-        """Permet d'obtenir la date d'émission de la carte de vigilance
-
-        Args:
-            dict(dict) : Le dictionnaire contenant les textes de vigilance
-        Returns:
-            date(str): la date d'émission ou None si elle n'est pas trouvé
-        """
         try:
             return dict["product"]["update_time"][:10]
         except TypeError:

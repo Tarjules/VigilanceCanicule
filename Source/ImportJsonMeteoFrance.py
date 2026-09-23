@@ -11,6 +11,16 @@ BASE = "https://files.data.gouv.fr/"
 class ImportJsonMeteoFrance(ABC):
 
     def construct_url(self, filename: str, year: int, month: int, day: int):
+        """Permet de construire l'URL où se situe le fichier json recherché.
+
+        Args:
+            filename(str) : CDP_TEXTE_VIGILANCE.json or CDP_CARTE_EXTERNE.json
+            year(int) : année du fichier recherché
+            month(int)  :mois du fichier recherché
+            day(int) : jour du fichier recherhé
+        Returns:
+            url(str) : or None (si pas de fichier trouvé)"""
+
         # A partir des entiers fournis, il faut reconstituer une date
         date = Date.from_int_to_string_slash(year, month, day)
         url_page_html = (BASE + "meteofrance/data/vigilance/metropole/" +
@@ -54,6 +64,13 @@ class ImportJsonMeteoFrance(ABC):
             return link
 
     def test_file_ever_exist(self, path: str):
+        """A partir d'un chemin relatif fournit, teste s'il
+        existe un fichier ouvrable à cette adresse
+
+        Args:
+            path(str) : chemin d'accès au fichier
+        Returns:
+            (bool)"""
         try:
             with open(path, "r"):
                 return True
@@ -132,5 +149,10 @@ class ImportJsonMeteoFrance(ABC):
             i += 1
 
     @staticmethod
-    def construct_path_json(self, year: int, name: str):
+    def construct_path_json(self, year: int, date: str):
+        """Construit le chemin d'accès relatif au fichier json désiré
+
+        Args:
+            year(int) : année du fichier
+            date(str) : date du fichier sous le format "YYYY_MM_DD"""
         pass

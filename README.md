@@ -4,10 +4,16 @@ https://files.data.gouv.fr/meteofrance/data/vigilance/metropole/
 
 Il n'y a des données que depuis novembre 2022.
 
+### Approche initiale : ###
 Le code repose sur l'extraction des vigilances canicules dans les fichiers CDP_TEXTE_VIGILANCE.json. Ceux-ci n'existent malheureusement pas pour tous les jours, même si c'est le cas pour la majorité des jours entre mai et octobre. 
 Le décompte ainsi obtenu des jours en alerte canicule est un minimum.
-Décompte imparfait car prise en compte uniquement des bulletins vigilance de 6h chaque jour (les vigilances pouvant se mettre en place plus tardivement dans la journée)
 
-# data base = https://files.data.gouv.fr/meteofrance/data/vigilance/metropole/
-# phenomenon_id	"6" : canicule
-# phenomenon_max_color_id	3 = orange (1 = vert, 2 = jaune, 3 = rouge)
+### Approche retenue : ###
+Les fichiers CDP_CARTE_EXTERNE.json étant présent pour chaque jour de l'année (relatif à la carte de vigilance), c'est sur ceux-ci que se baseront l'extraction des jours de canicule. Par comparaison entre les cartes et les fichiers json associés, on supposera :
+  phenomenon_id	== "6" correcpond à une vigilance canicule
+  phenomenon_max_color_id correspond au niveau d'alerte (1 = vert, 2 = jaune, 3 = orange, 4 = rouge)
+
+### Dans les deux approches : ###
+Le décompte imparfait car prise en compte uniquement des bulletins vigilance de 6h chaque jour (les vigilances pouvant se mettre en place plus tardivement dans la journée).
+
+

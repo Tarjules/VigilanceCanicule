@@ -6,18 +6,11 @@ class ExtractDataTexte(ExtractData):
 
     @staticmethod
     def extract_date(dict: dict):
-        """Permet d'obtenir la date d'émission du texte de vigilance
-
-        Args:
-            dict(dict) : Le dictionnaire contenant les textes de vigilance
-        Returns:
-            date(str): la date d'émission ou None si elle n'est pas trouvé
-        """
         try:
             return dict["product"]["update_time"][:10]
         except TypeError:
             return None
-    
+
     @staticmethod
     def extract_dict_departement(dict: dict, dept):
         if type(dept) is int:
@@ -25,19 +18,10 @@ class ExtractDataTexte(ExtractData):
         for departement in dict["product"]["text_bloc_items"]:
             if departement["domain_id"] == dept:
                 return departement
-        return None   
+        return None
 
     @staticmethod
     def extract_heatwave_level(dept: dict): 
-        """A partir du dictionnaire fournit, retourne la vigilance et son
-        niveau pour le département demandé
-
-        Args:
-            dict(dict) : Le dictionnaire contenant les textes de vigilance
-            dept(str ou int): Le département d'intéret
-        Returns:
-            ([str, str, str]): [departement, Vigilance, niveau] ou
-            [departement, None, None]"""
         try:
             for bloc in dept["bloc_items"]:
                 if bloc["id"] in ["DEP_SUIVI",
