@@ -63,12 +63,12 @@ class ExtractData(ABC):
     def data_year_and_departement(year: int, dept):
         """Selon le département et l'année désirée,
         renvoie une liste contenant des informations
-        de vigilance pour chaque jour de l'année et du
-        département demandé.
+        de vigilance pour chaque jour (si vigilance il y a) 
+        de l'année et du département demandé.
 
         Args:
             year(int) : Année désirée
-            dept(str or int): Département désirée
+            dept(str or int): Département désiré
         Returns:
-            (list) : [[date, dept, vigilance, niveau], ...]"""
+            (list) : [[date, vigilance, niveau], ...]"""
         pass

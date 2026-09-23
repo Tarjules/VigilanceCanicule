@@ -145,7 +145,8 @@ class ImportJsonMeteoFrance(ABC):
                 self.download_day(url, path)
             except FileExistsError:
                 i = 32
-                print("il n'y a plus de données pour ce mois")
+                print("il n'y a plus de données pour ce mois numéro " +
+                      str(month))
             i += 1
 
     @staticmethod
