@@ -13,7 +13,10 @@ class ExtractDataCarte(ExtractData):
     @staticmethod
     def extract_dict_departement(dict: dict, dept):
         if type(dept) is int:
-            dept = str(dept)
+            if dept < 10:
+                dept = "0" + str(dept)
+            else:
+                dept = str(dept)
         L_dict_dept = dict["product"]["periods"][0]["timelaps"]["domain_ids"]
         for departement in L_dict_dept:
             if departement["domain_id"] == dept:

@@ -7,13 +7,14 @@ from Source.ExtractDataCarte import ExtractDataCarte as Extract
 
 class Traitement:
     def __init__(self):
+        """Crée une instance de classe Traitement"""
         pass
-    
+
     def nb_day_heatwave(self, year: list):
         """Compte le nombre de jour en vigilance canicule jaune, 
         orange et rouge.
-        
-        Args: 
+
+        Args:
             year(list) : la liste des jour avec une vigilance canicule
             au format [[date, vigilance, niveau], ...]]
         Returns:
@@ -38,8 +39,8 @@ class Traitement:
         Args:
             dept(str or int) : département d'intéret
         Returns:
-            (list) : [[2023, nb_day_heatwave(2023)] ...]"""
-        dept_heatwaves = []
+            (list) : [dept, [2023, nb_day_heatwave(2023)] ...]"""
+        dept_heatwaves = [dept]
         extracter = Extract()
         for y in range(2023, 2027):
             year = extracter.data_year_and_departement(y, dept)

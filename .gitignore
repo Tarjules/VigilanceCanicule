@@ -1,5 +1,14 @@
-*.json
+.json
 test.py
-data/
+data/2022/carte
+data/2022/texte
+data/2023/carte
+data/2023/texte
+data/2024/carte
+data/2024/texte
+data/2025/carte
+data/2025/texte
+data/2026/carte
+data/2026/texte
 __pycache__/
 *.pyc
